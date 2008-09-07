@@ -98,7 +98,7 @@ object HListsInternal {
   case class NthFn[L <: HList, N <: Nat](fn : L => NthType[L, N]) extends Fn1Wrapper(fn)
 
   final class NthVisitor[L <: HList] extends NatVisitor {
-    type Type = Any
+    type ResultType = Any
     type Visit0 = L#Head
     type VisitSucc[Pre <: Nat] = Pre#Accept[NthVisitor[L#Tail]]
   }
@@ -106,7 +106,7 @@ object HListsInternal {
   type NthType[L <: HList, N <: Nat] = N#Accept[NthVisitor[L]]
 
   final class RemoveNthVisitor[L <: HList] extends NatVisitor {
-    type Type = HList
+    type ResultType = HList
     type Visit0 = L#Tail
     type VisitSucc[Pre <: Nat] = HCons[L#Head, Pre#Accept[RemoveNthVisitor[L#Tail]]]
   }
@@ -116,7 +116,7 @@ object HListsInternal {
   case class RemoveNthFn[L <: HList, N <: Nat](fn : L => RemoveNthType[L, N]) extends Fn1Wrapper(fn)
 
   final class InsertNthVisitor[L <: HList, T] extends NatVisitor {
-    type Type = HList
+    type ResultType = HList
     type Visit0 = HCons[T, L]
     type VisitSucc[Pre <: Nat] = HCons[L#Head, Pre#Accept[InsertNthVisitor[L#Tail, T]]]
   }

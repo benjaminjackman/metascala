@@ -1,0 +1,21 @@
+#Sun Sep 07 13:30:20 CEST 2008
+Xcheck-null=false
+Xcheckinit=false
+Xdisable-assertions=false
+Xexperimental=false
+Xfuture=false
+Xlog-implicits=false
+Xno-uescape=false
+Yclosure-elim=false
+Ydead-code=false
+Ydetach=false
+Yinline=false
+Ylinearizer=rpo
+Yno-imports=false
+Yno-predefs=false
+Yrecursion=50
+eclipse.preferences.version=1
+g=vars
+optimise=false
+scala.compiler.useProjectSettings=true
+target=jvm-1.5

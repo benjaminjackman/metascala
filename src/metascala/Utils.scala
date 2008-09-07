@@ -16,4 +16,12 @@ object Utils {
   }
   
   def to[T, VT](implicit fn : TypeToValue[T, VT]) = fn()
+  
+  trait TypeVisitor {
+    type ResultType
+  }
+  
+  trait Visitable[V <: TypeVisitor] {
+    type Accept[V2 <: V] <: V2#ResultType
+  }
 }

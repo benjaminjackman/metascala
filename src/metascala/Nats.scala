@@ -3,15 +3,13 @@ package metascala
 object Nats {
   import Utils._
   
-  trait NatVisitor {
-    type Type
-    type Visit0 <: Type
-    type VisitSucc[Pre <: Nat] <: Type
+  trait NatVisitor extends TypeVisitor {
+    type Visit0 <: ResultType
+    type VisitSucc[Pre <: Nat] <: ResultType
   }
   
-  sealed trait Nat { 
+  sealed trait Nat extends Visitable[NatVisitor] { 
     type Add[N <: Nat] <: Nat
-    type Accept[N <: NatVisitor] <: N#Type
   }
   
   final class _0 extends Nat {

@@ -33,4 +33,5 @@ object Booleans {
   
   implicit val falseToBoolean = TypeToValue[False, Boolean](false)
   implicit val trueToBoolean = TypeToValue[True, Boolean](true)
+
 }

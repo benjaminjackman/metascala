@@ -3,7 +3,6 @@ package metascala
 object HLists {
   import Nats._
   import Utils._
-  import HListsInternal._
 
   sealed trait HList {
     type Head
@@ -34,6 +33,8 @@ object HLists {
     type Append[L <: HList] = HCons[H, T#Append[L]]
     type ReverseAppend[L <: HList] = Tail#ReverseAppend[HCons[H, L]]
     type Length = Succ[T#Length]
+    type GetByType[N <: Nat, E] = GetByTypeFn[This, N, E]
+    type ReplaceByType[N <: Nat, E] = ReplaceByTypeFn[This, N, E]
 
     def ::[T](v : T) = HCons(v, this)
     def :::[L <: HList](l : L)(implicit fn : AppendFn[L, This]) = fn(l, this)
@@ -43,6 +44,9 @@ object HLists {
 
     def insert[N <: Nat, E](n : N, elem : E)(implicit fn : InsertNthFn[This, N, E]) : InsertNthType[This, N, E] = insert[N, E](elem)
     def insert[N <: Nat, E](elem : E)(implicit fn : InsertNthFn[This, N, E]) : InsertNthType[This, N, E] = fn(this, elem)
+
+    def replaceByType[N <: Nat, E](n : N, elem : E)(implicit fn : ReplaceByType[N, E]) = fn(this, elem)
+    def getByType[N <: Nat, E](implicit fn : GetByType[N, E]) : E = fn(this)
   }
   
   type ::[H, T <: HList] = HCons[H, T]
@@ -84,13 +88,30 @@ object HLists {
   
   implicit def hlistInsertNth[H, T <: HList, P <: Nat, E](implicit fn : InsertNthFn[T, P, E]) = 
     InsertNthFn[HCons[H, T], Succ[P], E]((l, elem) => HCons(l.head, fn(l.tail, elem)))
-}
 
-object HListsInternal {
-  import HLists._
-  import Utils._
-  import Nats._
+
+  // Replace by type
+
+  implicit def hlistReplaceByType0[T <: HList, E] = ReplaceByTypeFn[HCons[E, T], _0, E]((l, elem) => HCons(elem, l.tail))
   
+  implicit def hlistReplaceByTypeNthMatch[T <: HList, P <: Nat, E](implicit fn : ReplaceByTypeFn[T, P, E]) = 
+    ReplaceByTypeFn[HCons[E, T], Succ[P], E]((l, elem) => HCons(elem, fn(l.tail, elem)))
+
+  implicit def hlistReplaceByTypeNthNoMatch[H, T <: HList, N <: Nat, E](implicit fn : ReplaceByTypeFn[T, N, E]) = 
+    ReplaceByTypeFn[HCons[H, T], N, E]((l, elem) => HCons(l.head, fn(l.tail, elem)))
+
+
+  // Get by type
+
+  implicit def hlistGetByType0[T <: HList, E] = GetByTypeFn[HCons[E, T], _0, E](l => l.head)
+  
+  implicit def hlistGetByTypeNthMatch[T <: HList, P <: Nat, E](implicit fn : GetByTypeFn[T, P, E]) = 
+    GetByTypeFn[HCons[E, T], Succ[P], E](l => fn(l.tail))
+
+  implicit def hlistGetByTypeNthNoMatch[H, T <: HList, N <: Nat, E](implicit fn : GetByTypeFn[T, N, E]) = 
+    GetByTypeFn[HCons[H, T], N, E](l => fn(l.tail))
+
+
   case class AppendFn[L1 <: HList, L2 <: HList](fn : (L1, L2) => L1#Append[L2]) extends Fn2Wrapper(fn)
 
   case class ReverseAppendFn[L1 <: HList, L2 <: HList](fn : (L1, L2) => L1#ReverseAppend[L2]) extends Fn2Wrapper(fn)  
@@ -125,5 +146,9 @@ object HListsInternal {
   
   case class InsertNthFn[L <: HList, N <: Nat, E](fn : (L, E) => InsertNthType[L, N, E]) extends Fn2Wrapper(fn)
 
-}
 
+  case class ReplaceByTypeFn[L <: HList, N <: Nat, E](fn : (L, E) => L) extends Fn2Wrapper(fn)
+
+  case class GetByTypeFn[L <: HList, N <: Nat, E](fn : L => E) extends Fn1Wrapper(fn)
+
+}

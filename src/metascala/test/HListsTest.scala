@@ -50,4 +50,15 @@ object HListTest {
     val i3 : Int :: Boolean :: String :: HNil = l1.insert(_2, "Hello")
     val i4 : Int :: String :: HNil = l1.remove[_1].insert(_1, "Hello")
   }
+  
+  object GetByType {
+    val g1 = l1.getByType[_0, Int]
+    val g2 = l1.getByType[_0, Boolean]
+  }
+  
+  object ReplaceByType {
+    val r1 = l1.replaceByType(_0, 1)
+    val r2 = l1.replaceByType(_0, false)
+  }
+  
 }

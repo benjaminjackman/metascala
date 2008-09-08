@@ -2,14 +2,17 @@ package metascala
 
 object Nats {
   import Utils._
+  import Booleans._
   
   trait NatVisitor extends TypeVisitor {
     type Visit0 <: ResultType
     type VisitSucc[Pre <: Nat] <: ResultType
   }
   
-  sealed trait Nat extends Visitable[NatVisitor] { 
+  sealed trait Nat { 
+    type Accept[N <: NatVisitor] <: N#ResultType
     type Add[N <: Nat] <: Nat
+    type Eq[N <: Nat] <: Bool
   }
   
   final class _0 extends Nat {

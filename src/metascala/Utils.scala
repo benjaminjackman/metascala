@@ -24,4 +24,6 @@ object Utils {
   trait Visitable[V <: TypeVisitor] {
     type Accept[V2 <: V] <: V2#ResultType
   }
+  
+  def value[T] : T = null.asInstanceOf[T]
 }

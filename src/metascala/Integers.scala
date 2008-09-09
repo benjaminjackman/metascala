@@ -12,7 +12,9 @@ object Integers {
     type VisitNeg[Pos <: Nat] <: ResultType
   }
   
-  sealed trait MInt extends Visitable[IntVisitor] {
+  sealed trait MInt extends Visitable[IntVisitor] with Addable with Subtractable {
+    type AddType = MInt
+    type SubType = MInt
     type Add[I <: MInt] <: MInt
     type Neg <: MInt
     type Succ <: MInt
@@ -50,9 +52,6 @@ object Integers {
     type Succ = N#Pre#Neg
     type Pre = N#Succ#Neg
   }
-  
-  type +[I1 <: MInt, I2 <: MInt] = I1#Add[I2]
-  type -[I1 <: MInt, I2 <: MInt] = I1#Add[I2#Neg]
   
   type _1 = MSucc[_0]
   type _2 = MSucc[_1]

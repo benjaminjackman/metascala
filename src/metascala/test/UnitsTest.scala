@@ -2,9 +2,8 @@ package metascala.test
 
 object UnitsTest {
   import Units._
-  import Integers._
   
-  val dist : Length = measure(2.3) * m
-  val time : Time = measure(1.7) * s
+  val dist : Length = m(2.3)
+  val time : Time = s(1.7)
   val speed : Speed = dist / time
 }

@@ -9,9 +9,9 @@ object Nats {
     type VisitSucc[Pre <: Nat] <: ResultType
   }
   
-  sealed trait Nat { 
+  sealed trait Nat extends Addable {
+    type AddType = Nat
     type Accept[N <: NatVisitor] <: N#ResultType
-    type Add[N <: Nat] <: Nat
     type Eq[N <: Nat] <: Bool
   }
   
@@ -20,12 +20,10 @@ object Nats {
     type Accept[N <: NatVisitor] = N#Visit0
   }
   
-  final class Succ[P <: Nat] extends Nat { 
+  final class Succ[P <: Nat] extends Nat {
     type Add[N <: Nat] = Succ[P#Add[N]]
     type Accept[N <: NatVisitor] = N#VisitSucc[P]
   }
-  
-  type +[I1 <: Nat, I2 <: Nat] = I1#Add[I2]
   
   type _1 = Succ[_0]
   type _2 = Succ[_1]

@@ -25,5 +25,19 @@ object Utils {
     type Accept[V2 <: V] <: V2#ResultType
   }
   
+  trait Addable {
+    type AddType <: Addable
+    type Add[T <: AddType] <: AddType
+  }
+  
+  type +[A1 <: Addable, A2 <: A1#AddType] = A1#Add[A2]
+  
+  trait Subtractable {
+    type SubType <: Subtractable
+    type Sub[T <: SubType] <: SubType
+  }
+  
+  type -[S1 <: Subtractable, S2 <: S1#SubType] = S1#Sub[S2]
+  
   def value[T] : T = null.asInstanceOf[T]
 }

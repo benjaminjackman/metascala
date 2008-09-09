@@ -2,6 +2,7 @@ package metascala
 
 object Units {
   import Integers._
+  import Utils._
   
   trait Unit {
     type M <: MInt
@@ -20,36 +21,38 @@ object Units {
     type A = _A
     type K = _K
     type Mol = _Mol
-    type CD = _CD    
+    type CD = _CD
   }
   
-  case class Measure[M <: MInt, KG <: MInt, S <: MInt, A <: MInt, K <: MInt, Mol <: MInt, CD <: MInt](value : Double) {
-    type This = Measure[M, KG, S, A, K, Mol, CD]
-    def +(m : This) = Measure[M, KG, S, A, K, Mol, CD](value + m.value)
-    def *[M2 <: MInt, KG2 <: MInt, S2 <: MInt, A2 <: MInt, K2 <: MInt, Mol2 <: MInt, CD2 <: MInt](m : Measure[M2, KG2, S2, A2, K2, Mol2, CD2]) = Measure[M + M2, KG + KG2, S + S2, A + A2, K + K2, Mol + Mol2, CD + CD2](value * m.value)
-    def /[M2 <: MInt, KG2 <: MInt, S2 <: MInt, A2 <: MInt, K2 <: MInt, Mol2 <: MInt, CD2 <: MInt](m : Measure[M2, KG2, S2, A2, K2, Mol2, CD2]) = Measure[M - M2, KG - KG2, S - S2, A - A2, K - K2, Mol - Mol2, CD - CD2](value * m.value)
+  case class Quantity[M <: MInt, KG <: MInt, S <: MInt, A <: MInt, K <: MInt, Mol <: MInt, CD <: MInt](value : Double) {
+    type This = Quantity[M, KG, S, A, K, Mol, CD]
+    def +(m : This) = Quantity[M, KG, S, A, K, Mol, CD](value + m.value)
+    def -(m : This) = Quantity[M, KG, S, A, K, Mol, CD](value - m.value)
+    def *[M2 <: MInt, KG2 <: MInt, S2 <: MInt, A2 <: MInt, K2 <: MInt, Mol2 <: MInt, CD2 <: MInt](m : Quantity[M2, KG2, S2, A2, K2, Mol2, CD2]) = Quantity[M + M2, KG + KG2, S + S2, A + A2, K + K2, Mol + Mol2, CD + CD2](value * m.value)
+    def /[M2 <: MInt, KG2 <: MInt, S2 <: MInt, A2 <: MInt, K2 <: MInt, Mol2 <: MInt, CD2 <: MInt](m : Quantity[M2, KG2, S2, A2, K2, Mol2, CD2]) = Quantity[M - M2, KG - KG2, S - S2, A - A2, K - K2, Mol - Mol2, CD - CD2](value * m.value)
+    def apply(v : Double) = Quantity[M, KG, S, A, K, Mol, CD](v * value)
   }
   
-  implicit def measure(v : Double) = Measure[_0, _0, _0, _0, _0, _0, _0](v)
+  implicit def measure(v : Double) = Quantity[_0, _0, _0, _0, _0, _0, _0](v)
   
-  val m = Measure[_1, _0, _0, _0, _0, _0, _0](1)
-  val kg = Measure[_0, _1, _0, _0, _0, _0, _0](1)
-  val s = Measure[_0, _0, _1, _0, _0, _0, _0](1)
-  val a = Measure[_0, _0, _0, _1, _0, _0, _0](1)
-  val k = Measure[_0, _0, _0, _0, _1, _0, _0](1)
-  val mol = Measure[_0, _0, _0, _0, _0, _1, _0](1)
-  val cd = Measure[_0, _0, _0, _0, _0, _0, _1](1)
+  val m = Quantity[_1, _0, _0, _0, _0, _0, _0](1)
+  val kg = Quantity[_0, _1, _0, _0, _0, _0, _0](1)
+  val s = Quantity[_0, _0, _1, _0, _0, _0, _0](1)
+  val a = Quantity[_0, _0, _0, _1, _0, _0, _0](1)
+  val k = Quantity[_0, _0, _0, _0, _1, _0, _0](1)
+  val mol = Quantity[_0, _0, _0, _0, _0, _1, _0](1)
+  val cd = Quantity[_0, _0, _0, _0, _0, _0, _1](1)
   
-  type Length = Measure[_1, _0, _0, _0, _0, _0, _0]
-  type Mass = Measure[_0, _1, _0, _0, _0, _0, _0]
-  type Time = Measure[_0, _0, _1, _0, _0, _0, _0]
-  type Currency = Measure[_0, _0, _0, _1, _0, _0, _0]
-  type Temperature = Measure[_0, _0, _0, _0, _1, _0, _0]
-  type Mol = Measure[_0, _0, _0, _0, _0, _1, _0]
-  type LuminousIntensity = Measure[_0, _0, _0, _0, _0, _0, _1]
+  type Length = Quantity[_1, _0, _0, _0, _0, _0, _0]
+  type Mass = Quantity[_0, _1, _0, _0, _0, _0, _0]
+  type Time = Quantity[_0, _0, _1, _0, _0, _0, _0]
+  type Currency = Quantity[_0, _0, _0, _1, _0, _0, _0]
+  type Temperature = Quantity[_0, _0, _0, _0, _1, _0, _0]
+  type Mol = Quantity[_0, _0, _0, _0, _0, _1, _0]
+  type LuminousIntensity = Quantity[_0, _0, _0, _0, _0, _0, _1]
   
-  type Area = Measure[_2, _0, _0, _0, _0, _0, _0] 
-  type Volume = Measure[_3, _0, _0, _0, _0, _0, _0] 
-  type Speed = Measure[_1, _0, _1#Neg, _0, _0, _0, _0] 
-  type Acceleration = Measure[_1, _0, _2#Neg, _0, _0, _0, _0] 
+  type Area = Quantity[_2, _0, _0, _0, _0, _0, _0] 
+  type Volume = Quantity[_3, _0, _0, _0, _0, _0, _0] 
+  type Speed = Quantity[_1, _0, _1#Neg, _0, _0, _0, _0] 
+  type Acceleration = Quantity[_1, _0, _2#Neg, _0, _0, _0, _0] 
 }

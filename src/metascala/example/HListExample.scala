@@ -1,9 +1,9 @@
 package metascala.example
 
 object HListExample {
-  import HLists._
-  import Nats._
-  import Utils._
+  import metascala.HLists._
+  import metascala.Nats._
+  import metascala.Utils._
   
   // Create a HList of an Int, Boolean and a pair
   val l1 = 10 :: true :: (10.1, "Hello") :: HNil

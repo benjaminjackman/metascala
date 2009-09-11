@@ -8,6 +8,7 @@ object Booleans {
     type Or[B <: Bool] <: Bool
     type Not <: Bool
     type If[IfTrue, IfFalse]
+    type If2[T, IfTrue <: T, IfFalse <: T] <: T
   }
   
   final class True extends Bool {
@@ -15,6 +16,7 @@ object Booleans {
     type Or[B <: Bool] = True
     type Not = False
     type If[IfTrue, IfFalse] = IfTrue
+    type If2[T, IfTrue <: T, IfFalse <: T] = IfTrue
   }
   
   val True = new True
@@ -24,6 +26,7 @@ object Booleans {
     type Or[B <: Bool] = B
     type Not = True
     type If[IfTrue, IfFalse] = IfFalse
+    type If2[T, IfTrue <: T, IfFalse <: T] = IfFalse
   }
   
   val False = new False

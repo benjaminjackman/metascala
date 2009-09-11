@@ -1,9 +1,9 @@
 package metascala.test
 
 object HListTest {
-  import Nats._
-  import HLists._
-  import Utils._
+  import metascala.Nats._
+  import metascala.HLists._
+  import metascala.Utils._
   
   // Cons
   val l1 : Int :: Boolean :: HNil = 10 :: true :: HNil

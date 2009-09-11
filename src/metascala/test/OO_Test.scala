@@ -1,8 +1,8 @@
 package metascala.test
 
   object OO_Tuples {
-    import OO._
-    import Tuples._
+    import metascala.OO._
+    import metascala.Tuples._
 
     type Point = (Print, X, Y, Add)
     

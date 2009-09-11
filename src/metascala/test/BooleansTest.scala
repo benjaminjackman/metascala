@@ -1,8 +1,8 @@
 package metascala.test
 
 object BooleansTest {
-  import Booleans._
-  import Utils._
+  import metascala.Booleans._
+  import metascala.Utils._
 
   object And {
     type T1 = Equal[False, False && False]

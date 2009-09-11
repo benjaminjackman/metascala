@@ -10,17 +10,24 @@ object Nats {
   }
   
   sealed trait Nat extends Addable {
+    type Pre <: Nat
+    type Is0 <: Bool
+    type Add[T <: Nat] <: Nat
     type AddType = Nat
     type Accept[N <: NatVisitor] <: N#ResultType
     type Eq[N <: Nat] <: Bool
   }
   
   final class _0 extends Nat {
+    type Pre = _0
+    type Is0 = True
     type Add[N <: Nat] = N
     type Accept[N <: NatVisitor] = N#Visit0
   }
   
   final class Succ[P <: Nat] extends Nat {
+    type Pre = P
+    type Is0 = False
     type Add[N <: Nat] = Succ[P#Add[N]]
     type Accept[N <: NatVisitor] = N#VisitSucc[P]
   }

@@ -5,7 +5,12 @@ object TLists {
   import Nats._
   import Utils._
 
-  trait TList {
+  trait TListVisitor extends TypeVisitor {
+    type VisitNil <: ResultType
+    type VisitCons[H, T <: TList] <: ResultType
+  }
+
+  sealed trait TList extends Visitable[TListVisitor] {
     type Head
     type Tail <: TList
     type Append[L <: TList] <: TList
@@ -14,9 +19,11 @@ object TLists {
     type Nth[N <: Nat]
     type RemoveNth[N <: Nat] <: TList
     type Insert[N <: Nat, E] <: TList
+    type Reverse = ReverseAppend[TNil]
   }
 
   final class TNil extends TList {
+    type Accept[V <: TListVisitor] = V#VisitNil
     type Head = Nothing
     type Tail = TNil
     type Append[L <: TList] = L
@@ -35,6 +42,7 @@ object TLists {
   }
 
   final class TCons[H, T <: TList] extends TList {
+    type Accept[V <: TListVisitor] = V#VisitCons[H, T]
     type This = TCons[H, T]
     type Head = H
     type Tail = T
@@ -89,7 +97,7 @@ object TLists {
 
 
   implicit def isSubSetFn[T <: TList] = IsSubSetFn[TNil, T]()
-  implicit def isSubSetFn2[H, T, T2 <: TList](implicit fn1 : ContainsFn[H, T2], fn2 : IsSubSetFn[T, T2]) = IsSubSetFn[H :: T, T2]()
+  implicit def isSubSetFn2[H, T <: TList, T2 <: TList](implicit fn1 : ContainsFn[H, T2], fn2 : IsSubSetFn[T, T2]) = IsSubSetFn[H :: T, T2]()
 
   case class IsSubSetFn[H, T <: TList]()
 

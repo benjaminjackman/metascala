@@ -3,7 +3,6 @@ package metascala.test
 object NatsTest {
   import metascala.Nats._
   import metascala.Utils._
-  import metascala.Booleans._
   
   type T1 = Equal[_0, _0 + _0]
   type T2 = Equal[_1, _1 + _0]
@@ -11,7 +10,7 @@ object NatsTest {
   type T4 = Equal[_2, _1 + _1]
   type T5 = Equal[_7, _3 + _4]
 
-  trait Fib {
+  trait Fib extends NatVisitor {
     type ResultType = Nat
     type Visit0 = _0
     type VisitSucc[Pre <: Nat] = Pre#Is0#If2[Nat, _1, Pre#Accept[Fib] + Pre#Pre#Accept[Fib]]

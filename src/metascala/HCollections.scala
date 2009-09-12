@@ -13,7 +13,7 @@ object HCollections {
     def reverse : This[L#Reverse]
     def removeNth[N <: Nat](n : N) : This[L#RemoveNth[N]]
     def insert[N <: Nat, E](n : N, elem : E): This[L#Insert[N, E]]
-    def replaceSameType[N <: Nat, E](n : N, elem : E) : This[L]
+//    def replaceSameType[N <: Nat, E](n : N, elem : E) : This[L]
   }
 
 }

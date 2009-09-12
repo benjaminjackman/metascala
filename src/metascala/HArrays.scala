@@ -2,12 +2,12 @@ package metascala
 
 
 object HArrays {
-  import Utils._
   import Nats._
   import TLists._
   import HCollections._
 
   final case class HArray[L <: TList](value : Array[Any]) extends Tuple[L] {
+    type List = L
     type This[L <: TList] = HArray[L]
 
     def ::[T](v : T) = {
@@ -52,13 +52,17 @@ object HArrays {
       HArray[L#Insert[N, E]](a)
     }
 
-    def replaceSameType[N <: Nat, E](n : N, elem : E) = null
-/*    def getByType[N <: Nat, E](implicit fn : GetByType[N, E]) : E = fn(this) */
+//    def replaceSameType[N <: Nat, E](n : N, elem : E) = null
+//    def getByType[N <: Nat, E](implicit fn : GetByType[N, E]) : E = fn(this)
   }
 
-  def arrayTuple[T1](v1 : T1) = HArray[T1 :: TNil](Array(v1))
-  def arrayTuple[T1, T2](v1 : T1, v2 : T2) = HArray[T1 :: T2 :: TNil](Array(v1, v2))
-  def arrayTuple[T1, T2, T3](v1 : T1, v2 : T2, v3 : T3) = HArray[T1 :: T2 :: T3 :: TNil](Array(v1, v2, v3))
-  def arrayTuple[T1, T2, T3, T4](v1 : T1, v2 : T2, v3 : T3, v4 : T4) = HArray[T1 :: T2 :: T3 :: T4 :: TNil](Array(v1, v2, v3, v4))
-  def arrayTuple[T1, T2, T3, T4, T5](v1 : T1, v2 : T2, v3 : T3, v4 : T4, v5 : T5) = HArray[T1 :: T2 :: T3 :: T4 :: T5 :: TNil](Array(v1, v2, v3, v4, v5))
+  val HArrayNil = HArray[TNil](new Array[Any](0))
+
+  private def createArray(elems : Any*) = elems toArray
+
+  def arrayTuple[T1](v1 : T1) = HArray[T1 :: TNil](createArray(v1))
+  def arrayTuple[T1, T2](v1 : T1, v2 : T2) = HArray[T1 :: T2 :: TNil](createArray(v1, v2))
+  def arrayTuple[T1, T2, T3](v1 : T1, v2 : T2, v3 : T3) = HArray[T1 :: T2 :: T3 :: TNil](createArray(v1, v2, v3))
+  def arrayTuple[T1, T2, T3, T4](v1 : T1, v2 : T2, v3 : T3, v4 : T4) = HArray[T1 :: T2 :: T3 :: T4 :: TNil](createArray(v1, v2, v3, v4))
+  def arrayTuple[T1, T2, T3, T4, T5](v1 : T1, v2 : T2, v3 : T3, v4 : T4, v5 : T5) = HArray[T1 :: T2 :: T3 :: T4 :: T5 :: TNil](createArray(v1, v2, v3, v4, v5))
 }

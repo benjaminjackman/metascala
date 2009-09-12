@@ -13,7 +13,7 @@ object HArrayExample {
   // boolean and operation
   val b = l1(_1) && false
 
-  // Create another HList, note the use of an operator in
+  // Create another HArray, note the use of an operator in
   // the type expression
   val l2 = harray(1.1, "string", false)
 

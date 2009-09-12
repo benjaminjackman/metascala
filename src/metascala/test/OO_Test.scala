@@ -4,8 +4,10 @@ package metascala.test
     import metascala.OO._
     import metascala.Tuples._
 
+/* No longer compiles with 2.8
+
     type Point = (Print, X, Y, Add)
-    
+
     case class Print(fn : Point => Unit) extends Method0(fn)
     case class X(fn : Point => Int) extends Method0(fn)
     case class Y(fn : Point => Int) extends Method0(fn)
@@ -29,7 +31,7 @@ package metascala.test
       p1.call[Print]
       p2.call[Print]
       p3.call[Print]
-    }
+    }*/
   }
 
 /*  object HList {

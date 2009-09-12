@@ -35,8 +35,8 @@ object HArrayTest {
   }
 
   object Length {
-    type L1 = Equal[l1.List#Length, _2]
-    type L2 = Equal[l3.List#Length, _3]
+    type L1 = Equal[l1.Length, _2]
+    type L2 = Equal[l3.Length, _3]
   }
 
   object Remove {
@@ -63,12 +63,12 @@ object HArrayTest {
 //    val r2 = l1.replaceByType(_0, false)
   }
 
-  val t : HArray[Int :: Boolean :: String :: TNil] = arrayTuple(10, true, "Hello")
+  val t : HArray[Int :: Boolean :: String :: TNil] = harray(10, true, "Hello")
   val t2 : HArray[Double :: Int :: Boolean :: String :: TNil] = 10.1 :: t
   val t3 : HArray[Double :: Int :: Boolean :: String :: Int :: Boolean :: String :: TNil] = t2 ::: t
   val t4 : HArray[String :: Int :: Boolean :: String :: TNil] = "x" :: t
-  val t5 : HArray[Int :: TNil] = arrayTuple(10)
-  val t6 : HArray[String :: TNil] = arrayTuple("a")
+  val t5 : HArray[Int :: TNil] = harray(10)
+  val t6 : HArray[String :: TNil] = harray("a")
   val t7 : HArray[Int :: String :: TNil] = t5 ::: t6
   val t8 : Boolean = t(_1)
   val t9 : HArray[String :: Boolean :: Int :: TNil] = t.reverse

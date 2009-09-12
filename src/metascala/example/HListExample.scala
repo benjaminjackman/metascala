@@ -29,5 +29,5 @@ object HListExample {
   val l4 = l1 ::: l2
 
   // Statically check that the length of l4 is 6
-  type T = Equal[_6, l4.type#Length]
+  type T = Equal[_6, l4.Length]
 }

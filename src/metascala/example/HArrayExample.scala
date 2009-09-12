@@ -14,7 +14,7 @@ object HArrayExample {
   val b = a1(_1) && false
 
   // Create another HArray using alternative syntax (faster)
-  val a2 = harray(1.1, "string", false)
+  val a2 = HArray(1.1, "string", false)
 
   // Replace the second element in the list, it used to
   // be a String, but now it's an Int

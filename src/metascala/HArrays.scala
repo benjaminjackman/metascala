@@ -6,7 +6,7 @@ object HArrays {
   import TLists._
   import HCollections._
 
-  final case class HArray[L <: TList](value : Array[Any]) extends Tuple[L] {
+  final case class HArray[L <: TList](private val value : Array[Any]) extends Tuple[L] {
     type Types = L
     type This[L <: TList] = HArray[L]
     type Length = Types#Length

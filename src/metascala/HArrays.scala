@@ -18,7 +18,7 @@ object HArrays {
   implicit def nth0[H, T <: TList] = HArrayNth[H :: T, _0](0)
   implicit def nth[H, T <: TList, P <: Nat](implicit n : HArrayNth[T, P]) = HArrayNth[H :: T, Succ[P]](n.index + 1)
 
-  final class HArray[L <: TList](private val value : Array[Any]) extends HSeq[L] {
+  final class HArray[L <: TList](private val elems : Array[Any]) extends HSeq[L] {
     type This[L <: TList] = HArray[L]
 
     type INth[N <: Nat] = HArrayNth[L, N]
@@ -26,55 +26,55 @@ object HArrays {
     type IInsert[N <: Nat, E] = HArrayInsertNth[L, N]
 
     def ::[T](v : T) = {
-      val a = new Array[Any](value.length + 1)
+      val a = new Array[Any](elems.length + 1)
       a(0) = v
-      Array.copy(value, 0, a, 1, value.length)
+      Array.copy(elems, 0, a, 1, elems.length)
       new HArray[T :: L](a)
     }
 
     def :::[L2 <: TList](l : HArray[L2]) = {
-      val a = new Array[Any](value.length + l.value.length)
-      Array.copy(l.value, 0, a, 0, l.value.length)
-      Array.copy(value, 0, a, l.value.length, value.length)
+      val a = new Array[Any](elems.length + l.elems.length)
+      Array.copy(l.elems, 0, a, 0, l.elems.length)
+      Array.copy(elems, 0, a, l.elems.length, elems.length)
       new HArray[L2#Append[L]](a)
     }
 
-    def apply[N <: Nat](implicit nth : INth[N]) : L#Nth[N] = value(nth.index).asInstanceOf[L#Nth[N]]
+    def apply[N <: Nat](implicit nth : INth[N]) : L#Nth[N] = elems(nth.index).asInstanceOf[L#Nth[N]]
 
     def reverse = {
-      val a = new Array[Any](value.length)
+      val a = new Array[Any](elems.length)
 
-      for (i <- 0 until value.length)
-        a(i) = value(value.length - 1 - i)
+      for (i <- 0 until elems.length)
+        a(i) = elems(elems.length - 1 - i)
 
       new HArray[L#ReverseAppend[TNil]](a)
     }
 
     def removeNth[N <: Nat](implicit nth : INth[N]) = {
-      val a = new Array[Any](value.length - 1)
+      val a = new Array[Any](elems.length - 1)
       val i = nth.index
-      Array.copy(value, 0, a, 0, i)
-      Array.copy(value, i + 1, a, i, value.length - 1 - i)
+      Array.copy(elems, 0, a, 0, i)
+      Array.copy(elems, i + 1, a, i, elems.length - 1 - i)
       new HArray[L#RemoveNth[N]](a)
     }
 
     def insert[N <: Nat, E](elem : E)(implicit nth : HArrayInsertNth[L, N]) = {
-      val a = new Array[Any](value.length + 1)
+      val a = new Array[Any](elems.length + 1)
       val i = nth.index
-      Array.copy(value, 0, a, 0, i)
+      Array.copy(elems, 0, a, 0, i)
       a(i) = elem
-      Array.copy(value, i, a, i + 1, value.length - i)
+      Array.copy(elems, i, a, i + 1, elems.length - i)
       new HArray[L#Insert[N, E]](a)
     }
 
     override def equals(o : Any) = o match {
-      case ha : HArray[_] => HArray.equal(value, ha.value)
+      case ha : HArray[_] => HArray.equal(elems, ha.elems)
       case _ => false
     }
 
-    override def hashCode = HArray.hashCode(value)
+    override def hashCode = HArray.hashCode(elems)
 
-    override def toString = "HArray(" + value.mkString(", ") + ")" 
+    override def toString = "HArray(" + elems.mkString(", ") + ")"
 //    def replaceSameType[N <: Nat, E](n : N, elem : E) = null
 //    def getByType[N <: Nat, E](implicit fn : GetByType[N, E]) : E = fn(this)
   }

@@ -2,7 +2,10 @@ package metascala
 
 object Integers {
   import Utils._
-  
+  import Visitables._
+  import Addables._
+  import Subtractables._
+
   trait NatVisitor extends TypeVisitor {
     type Visit0 <: ResultType
     type VisitSucc[Pre <: Nat] <: ResultType

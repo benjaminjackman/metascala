@@ -5,11 +5,25 @@ object HArrays {
   import Nats._
   import TLists._
   import HCollections._
+  import Booleans._
+  import Comparables._
 
-  final class HArray[L <: TList](private val value : Array[Any]) extends Tuple[L] {
-    type Types = L
+  final case class HArrayInsertNth[L <: TList, N <: Nat](index : Int)
+
+  implicit def insertNth0[L <: TList] = HArrayInsertNth[L, _0](0)
+  implicit def insertNth[H, T <: TList, P <: Nat](implicit n : HArrayInsertNth[T, P]) = HArrayInsertNth[H :: T, Succ[P]](n.index + 1)
+
+  final case class HArrayNth[L <: TList, N <: Nat](index : Int)
+
+  implicit def nth0[H, T <: TList] = HArrayNth[H :: T, _0](0)
+  implicit def nth[H, T <: TList, P <: Nat](implicit n : HArrayNth[T, P]) = HArrayNth[H :: T, Succ[P]](n.index + 1)
+
+  final class HArray[L <: TList](private val value : Array[Any]) extends HSeq[L] {
     type This[L <: TList] = HArray[L]
-    type Length = Types#Length
+
+    type INth[N <: Nat] = HArrayNth[L, N]
+    type IRemoveNth[N <: Nat] = INth[N]
+    type IInsert[N <: Nat, E] = HArrayInsertNth[L, N]
 
     def ::[T](v : T) = {
       val a = new Array[Any](value.length + 1)
@@ -25,7 +39,7 @@ object HArrays {
       new HArray[L2#Append[L]](a)
     }
 
-    def apply[N <: Nat](n : N) : L#Nth[N] = value(n.toInt).asInstanceOf[L#Nth[N]]
+    def apply[N <: Nat](implicit nth : INth[N]) : L#Nth[N] = value(nth.index).asInstanceOf[L#Nth[N]]
 
     def reverse = {
       val a = new Array[Any](value.length)
@@ -36,17 +50,17 @@ object HArrays {
       new HArray[L#ReverseAppend[TNil]](a)
     }
 
-    def removeNth[N <: Nat](n : N) = {
+    def removeNth[N <: Nat](implicit nth : INth[N]) = {
       val a = new Array[Any](value.length - 1)
-      val i = n.toInt
+      val i = nth.index
       Array.copy(value, 0, a, 0, i)
       Array.copy(value, i + 1, a, i, value.length - 1 - i)
       new HArray[L#RemoveNth[N]](a)
     }
 
-    def insert[N <: Nat, E](n : N, elem : E) = {
+    def insert[N <: Nat, E](elem : E)(implicit nth : HArrayInsertNth[L, N]) = {
       val a = new Array[Any](value.length + 1)
-      val i = n.toInt
+      val i = nth.index
       Array.copy(value, 0, a, 0, i)
       a(i) = elem
       Array.copy(value, i, a, i + 1, value.length - i)
@@ -60,6 +74,7 @@ object HArrays {
 
     override def hashCode = HArray.hashCode(value)
 
+    override def toString = "HArray(" + value.mkString(", ") + ")" 
 //    def replaceSameType[N <: Nat, E](n : N, elem : E) = null
 //    def getByType[N <: Nat, E](implicit fn : GetByType[N, E]) : E = fn(this)
   }

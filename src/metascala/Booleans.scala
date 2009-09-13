@@ -37,4 +37,8 @@ object Booleans {
   implicit val falseToBoolean = TypeToValue[False, Boolean](false)
   implicit val trueToBoolean = TypeToValue[True, Boolean](true)
 
+  trait IfTrue[P >: True <: True, T] {
+    type Type = T
+  }
+
 }

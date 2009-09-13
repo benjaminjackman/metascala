@@ -3,28 +3,37 @@ package metascala
 object Nats {
   import Utils._
   import Booleans._
-  
+  import Addables._
+  import Comparables._
+  import Visitables._
+
   trait NatVisitor extends TypeVisitor {
     type Visit0 <: ResultType
     type VisitSucc[Pre <: Nat] <: ResultType
   }
   
-  sealed trait Nat extends Addable {
-    type Pre <: Nat
+  sealed trait Nat extends Addable with Comparable {
+    type CompareType = Nat
+    
+    type Pre
     type Is0 <: Bool
     type Add[T <: Nat] <: Nat
     type AddType = Nat
     type Accept[N <: NatVisitor] <: N#ResultType
-    type Eq[N <: Nat] <: Bool
+    type Equals[N <: Nat] <: Bool
+    type LessThan[N <: Nat] <: Bool
 
     def toInt : Int
   }
   
   final class _0 extends Nat {
-    type Pre = _0
+    type Pre = Invalid
     type Is0 = True
     type Add[N <: Nat] = N
     type Accept[N <: NatVisitor] = N#Visit0
+
+    type Equals[N <: Nat] = N#Is0
+    type LessThan[N <: Nat] = N#Is0#Not
 
     def toInt = 0
   }
@@ -34,6 +43,22 @@ object Nats {
     type Is0 = False
     type Add[N <: Nat] = Succ[P#Add[N]]
     type Accept[N <: NatVisitor] = N#VisitSucc[P]
+
+    trait EqualsVisitor extends NatVisitor {
+      type ResultType = Bool
+      type Visit0 = False
+      type VisitSucc[Pre <: Nat] = P#Equals[Pre]
+    }
+
+    type Equals[N <: Nat] = N#Accept[EqualsVisitor]
+
+    trait LessThanVisitor extends NatVisitor {
+      type ResultType = Bool
+      type Visit0 = False
+      type VisitSucc[Pre <: Nat] = P#LessThan[Pre]
+    }
+
+    type LessThan[N <: Nat] = N#Accept[LessThanVisitor]
 
     def +[N <: Nat](n : N) : Add[N] = Succ[P#Add[N]](toInt + n.toInt)
   }

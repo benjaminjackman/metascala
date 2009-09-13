@@ -3,7 +3,9 @@ package metascala
 object Units {
   import Integers._
   import Utils._
-  
+  import Addables._
+  import Subtractables._
+
   trait Unit {
     type M <: MInt
     type KG <: MInt

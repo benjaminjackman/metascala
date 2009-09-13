@@ -35,14 +35,14 @@ object HArrayTest {
   }
 
   object Length {
-    type L1 = Equal[l1.Length, _2]
-    type L2 = Equal[l3.Length, _3]
+    type L1 = Equal[l1.Size, _2]
+    type L2 = Equal[l3.Size, _3]
   }
 
   object Remove {
     val r1 : HArray[Boolean :: TNil] = l1.removeNth(_0)
     val r2 : HArray[Int :: TNil] = l1.removeNth(_1)
-    val r3 : HArray[TNil] = l1.removeNth(_0).removeNth(_0)
+    val r3 : HArray[TNil] = r1.removeNth(_0)
     val r4 : HArray[(Int, Boolean) :: Int :: TNil] = l3.removeNth(_2)
   }
 

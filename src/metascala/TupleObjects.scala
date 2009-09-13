@@ -1,5 +1,0 @@
-package metascala
-
-object TupleObjects {
-
-}

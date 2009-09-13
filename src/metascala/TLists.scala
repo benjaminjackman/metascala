@@ -4,6 +4,7 @@ package metascala
 object TLists {
   import Nats._
   import Utils._
+  import Visitables._
 
   trait TListVisitor extends TypeVisitor {
     type VisitNil <: ResultType
@@ -11,8 +12,6 @@ object TLists {
   }
 
   sealed trait TList extends Visitable[TListVisitor] {
-    type Head
-    type Tail <: TList
     type Append[L <: TList] <: TList
     type ReverseAppend[L <: TList] <: TList
     type Length <: Nat
@@ -24,12 +23,12 @@ object TLists {
 
   final class TNil extends TList {
     type Accept[V <: TListVisitor] = V#VisitNil
-    type Head = Nothing
+    type Head = Invalid
     type Tail = TNil
     type Append[L <: TList] = L
     type ReverseAppend[L <: TList] = L
     type Length = _0
-    type Nth[N <: Nat] = Nothing
+    type Nth[N <: Nat] = Invalid
     type RemoveNth[N <: Nat] = TNil
 
     class InsertVisitor[E] extends NatVisitor {
@@ -50,29 +49,29 @@ object TLists {
     type ReverseAppend[L <: TList] = Tail#ReverseAppend[TCons[H, L]]
     type Length = Succ[T#Length]
 
-    class NthVisitor[L <: TList] extends NatVisitor {
+    class NthVisitor[H, T <: TList] extends NatVisitor {
       type ResultType = Any
-      type Visit0 = L#Head
-      type VisitSucc[Pre <: Nat] = L#Tail#Nth[Pre]
+      type Visit0 = H
+      type VisitSucc[Pre <: Nat] = T#Nth[Pre]
     }
 
-    type Nth[N <: Nat] = N#Accept[NthVisitor[This]]
+    type Nth[N <: Nat] = N#Accept[NthVisitor[H, T]]
 
-    class RemoveNthVisitor[L <: TList] extends NatVisitor {
+    class RemoveNthVisitor[H, T <: TList] extends NatVisitor {
       type ResultType = TList
-      type Visit0 = L#Tail
-      type VisitSucc[Pre <: Nat] = TCons[L#Head, L#Tail#RemoveNth[Pre]]
+      type Visit0 = T
+      type VisitSucc[Pre <: Nat] = TCons[H, T#RemoveNth[Pre]]
     }
 
-    type RemoveNth[N <: Nat] = N#Accept[RemoveNthVisitor[This]]
+    type RemoveNth[N <: Nat] = N#Accept[RemoveNthVisitor[H, T]]
 
-    class InsertVisitor[L <: TList, E] extends NatVisitor {
+    class InsertVisitor[H, T <: TList, E] extends NatVisitor {
       type ResultType = TList
-      type Visit0 = TCons[E, L]
-      type VisitSucc[Pre <: Nat] = TCons[L#Head, L#Tail#Insert[Pre, E]]
+      type Visit0 = TCons[E, TCons[H, T]]
+      type VisitSucc[Pre <: Nat] = TCons[H, T#Insert[Pre, E]]
     }
 
-    type Insert[N <: Nat, E] = N#Accept[InsertVisitor[This, E]]
+    type Insert[N <: Nat, E] = N#Accept[InsertVisitor[H, T, E]]
   }
 
   type ::[H, T <: TList] = TCons[H, T]

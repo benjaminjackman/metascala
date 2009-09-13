@@ -28,5 +28,5 @@ object HArrayExample {
   val a4 = a1 ::: a2
 
   // Statically check that the length of l4 is 6
-  type T = Equal[_6, a4.Length]
+  type T = Equal[_6, a4.Size]
 }

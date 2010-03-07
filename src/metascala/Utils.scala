@@ -3,6 +3,7 @@ package metascala
 object Utils {
   final class Invalid
 
+  trait SubType[T1 <: T2, T2]
   trait Equal[T1 >: T2 <: T2, T2]
 
   class Fn1Wrapper[T1, R](fn : T1 => R) {

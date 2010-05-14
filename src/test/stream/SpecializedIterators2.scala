@@ -9,11 +9,6 @@ object SpecializedIterators2 {
     def map[@specialized U](fn : T => U, dummy : T, dummy2 : U) = new MapIterator[T, U](this, fn)
   }
 
-  final class IntArrayIterator(a : Array[Int], var index : Int, endIndex : Int) extends SIterator[Int] {
-    def next() = {val r = a(index); index += 1; r}
-    def hasNext = index < endIndex
-  }
-
   final class ArrayIterator[@specialized T](a : Array[T], var index : Int, endIndex : Int) extends SIterator[T] {
     def next() = {val r = a(index); index += 1; r}
     def hasNext = index < endIndex
